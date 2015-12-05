@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,7 +21,7 @@ public class LockPatternView  extends  View{
 
 	//创建画笔
 	Paint  paint  = new Paint(Paint.ANTI_ALIAS_FLAG);
-	
+	OnpatternchangeListener  listener ; 
 	//9个点
         private    Point   points [][]= new Point[3][3];
         private   boolean    isinit  , isselected , isover;                                              //判断是否初始化
@@ -79,6 +80,12 @@ public class LockPatternView  extends  View{
 			}
 			
 }
+	/**
+	 * 图案监听器，在OnTouchEvent事件上调用
+	 * @author lenovo
+	 *
+	 */
+	 
 	
 	//在OnDraw中画出点与线
 	@Override
@@ -205,6 +212,14 @@ public class LockPatternView  extends  View{
 		       points [2][2] = new Point(offsetsX + Width - Width /4,offsetsY+ Width - Width /4);
 	      //图片资源半径,获得当前图片的长度并且除以2
 		       BitmapRadious = normalpoint.getHeight()/2;
+		       //设置密码
+		      int  index = 1;
+		       for(Point[] points : this.points){
+		    	   for(Point point : points){
+		    		   point.index = index;
+		    		   index ++ ;
+		    	   }
+		       }
 		       //初始化完成
 		       isinit = true;
 	}
@@ -226,6 +241,9 @@ public boolean onTouchEvent(MotionEvent event) {
 	  //按下
 	  case MotionEvent.ACTION_DOWN   :
 		        reset();     
+		        if(listener != null){
+		        	listener.onpatterstart(true);
+		        }
 	          point = checkpoint();
 		         if(point != null){
 		        	     isselected = true;
@@ -269,8 +287,25 @@ public boolean onTouchEvent(MotionEvent event) {
 		    	    reset();
 		     }
 		   //绘制错误
-		     else if(listpoint.size() < 5 &&  listpoint.size()  > 2){
+		     else if(listpoint.size() < 5 &&  listpoint.size()  > 0){
 		    	          errorPoint();
+		    	          if(listener != null){
+		    	        	 listener.onpatterchanged(null);
+		    	        	 // listener.onpatterchanged("nimei");
+		    	          }
+		    	          
+		     }
+		   //绘制成功,触发监听事件
+		     else{
+		    	  if(listener != null){
+		    		  String  passstr = "";
+		    		  for(int i = 0 ; i < listpoint.size(); i++){
+		    			       passstr = passstr + listpoint.get(i).index;
+		    		  }
+		    		  if(!TextUtils.isEmpty(passstr))
+		    		 listener.onpatterchanged(passstr);       //绘制成功把绘制成功的密码返回出去
+		    		//  listener.onpatterchanged("nimei");
+		    	  }
 		     }
 	   }
 	  postInvalidate();       //每次ontouch 事件都必须让View重新绘制一下，刷新View,会重新调用OnDraw的方法
@@ -307,6 +342,9 @@ public boolean onTouchEvent(MotionEvent event) {
     	    	}else if(bx < ax){
     	    		degress = 180;
     	    	}
+    	    }
+    	    else{
+    	    	  degress =   (float) Math.toDegrees((float) Math.atan2(b.y - a.y, b.x - a.x));
     	    }
     	    
     	    return   degress;
@@ -355,5 +393,18 @@ public   void    errorPoint(){
 		                return  Math.sqrt(    (x - MoveX) * (x - MoveX)  +  ( y - MoveY)  * (y - MoveY)   ) < R;
 	}
 	
+	  public   static  interface OnpatternchangeListener{
+	      //图案改变
+		  void  onpatterchanged(String passwordstr);       //返回密码字符串
+	      //图案是否重新绘制
+		  void  onpatterstart(boolean   isstart);          //当不画的时候就显示请绘制的字符串
+	        
+   }
+   
+   public   void   setOnpatternLListener(OnpatternchangeListener hhh){
+	   if(hhh != null)    
+	   this.listener = hhh;
+   }
 
 }
+
