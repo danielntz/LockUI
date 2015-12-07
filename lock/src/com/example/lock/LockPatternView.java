@@ -18,7 +18,8 @@ import android.view.View;
 public class LockPatternView  extends  View{
       
 	 private static final String TAG = null;
-
+     //创建全局对象
+	 judgeflag   signal ;
 	//创建画笔
 	Paint  paint  = new Paint(Paint.ANTI_ALIAS_FLAG);
 	OnpatternchangeListener  listener ; 
@@ -222,6 +223,7 @@ public class LockPatternView  extends  View{
 		       }
 		       //初始化完成
 		       isinit = true;
+		   
 	}
      
 	   //覆盖View中的Touch事件
@@ -292,6 +294,7 @@ public boolean onTouchEvent(MotionEvent event) {
 		    	          if(listener != null){
 		    	        	 listener.onpatterchanged(null);
 		    	        	 // listener.onpatterchanged("nimei");
+		    	        	 
 		    	          }
 		    	          
 		     }

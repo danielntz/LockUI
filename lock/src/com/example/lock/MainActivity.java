@@ -3,6 +3,8 @@ package com.example.lock;
 import com.example.lock.LockPatternView.OnpatternchangeListener;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,14 +16,19 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements OnpatternchangeListener{
         
 	   protected static final String TAG = null;
-	private    TextView     xianshi;
+	   private    TextView     xianshi;
 	   private    LockPatternView    hhh ;
+	   private    judgeflag    judge;
+	   private    String      chuandimima;
 	   
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		judge = (judgeflag)getApplication();
+		
 		hhh = (LockPatternView)findViewById(R.id.huatu);    //初始化画布
+		chuandimima = getIntent().getStringExtra("judge");  
 		xianshi = (TextView)findViewById(R.id.name);
 		hhh.setOnpatternLListener(this);      //给图案锁设置监听器
 	}
@@ -49,7 +56,29 @@ public class MainActivity extends Activity implements OnpatternchangeListener{
 	public void onpatterchanged(String passwordstr) {
 		// TODO Auto-generated method stub
 		if(!TextUtils.isEmpty(passwordstr)){
-			  xianshi.setText(passwordstr);
+			 // xianshi.setText(passwordstr);
+			// judge.password = passwordstr;		     //设置密码,把密码写到sharedpreference
+			 if(chuandimima.equals("1")){
+		         SharedPreferences  myshare = getSharedPreferences("sp", 0);
+		         SharedPreferences.Editor edit = myshare.edit();
+		         edit.putString("mima", passwordstr);     //写入到sharedPreference
+			     edit.commit();
+		     //  Log.i(TAG, passwordstr);
+			     xianshi.setText("密码设置成功");
+			    
+			 }
+			 else{
+				 if(passwordstr.equals(judge.getPassword()))
+				 { 
+				   //xianshi.setText("解锁成功");
+				   Intent  intent  = new Intent(this,zhujiemian.class);
+				   startActivity(intent);
+				   finish();
+				 }
+				 else
+				   xianshi.setText("手势错误");
+				
+			 }
 		}
 		else{
 			xianshi.setText("至少五个密码");
