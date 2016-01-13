@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements OnpatternchangeListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		judge = (judgeflag)getApplication();
+		judge = (judgeflag)getApplication();   //采用全局对象进行界面之间的传值
 		
 		hhh = (LockPatternView)findViewById(R.id.huatu);    //初始化画布
 		chuandimima = getIntent().getStringExtra("judge");  

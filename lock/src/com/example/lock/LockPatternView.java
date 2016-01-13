@@ -133,7 +133,8 @@ public class LockPatternView  extends  View{
 		    	    	    	     canvas.drawBitmap(normalpoint, point.x - BitmapRadious, point.y - BitmapRadious, paint );
 		    	    	     }
 		    	    	     else if(point.state == Point.STATE_ERROR){
-		    	    	    	 canvas.drawBitmap(errorpoint, point.x  - BitmapRadious, point.y - BitmapRadious, paint);
+		    	    	   	 canvas.drawBitmap(errorpoint, point.x  - BitmapRadious, point.y - BitmapRadious, paint);
+		    	    	    
 		    	    	     }
 		    	    	     else{
 		    	    	    	 canvas.drawBitmap(pressedpoint, point.x  - BitmapRadious, point.y  - BitmapRadious, paint);
@@ -164,7 +165,9 @@ public class LockPatternView  extends  View{
 	   }
 	               else{
 	            	   matrix.setScale((float)linelength  / lineerropoint.getWidth(),  1) ;               //x轴，Y轴的缩放  X轴的缩放比例，Y轴不需要缩放则是1
-                       matrix.postTranslate(a.x - lineerropoint.getWidth() /2,a.y - lineerropoint.getHeight() /2);
+                  //   matrix.postTranslate(a.x - lineerropoint.getWidth() /5,a.y - lineerropoint.getHeight() /5);
+	               matrix.postTranslate(a.x - linepoint.getWidth() /2,a.y - linepoint.getHeight() /2);
+	           //	    matrix.postTranslate(a.x -7, a.y - 7);
             	       canvas.drawBitmap(lineerropoint, matrix, paint);      
 	               }
 	   
